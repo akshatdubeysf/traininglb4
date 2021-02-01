@@ -4,28 +4,24 @@ import {Roles} from '../enums/roles';
 
 @model()
 export class Role extends Entity implements Permissions<string>{
-
-  @property({
-    type: 'number',
-    id: true,
-    generated: true,
-  })
-  id?: number;
-
-
   @property({
     type: 'string',
   })
   name?: string;
 
   @property({
+    id: true,
+    generated: true,
+    type: 'number'
+  })
+  id: number;
+
+  @property({
+    type: 'string',
     jsonSchema: {
       enum: Object.keys(Roles)
     },
-    postgresql: {
-      enum: Roles
-    },
-    required: true,
+    required: true
   })
   key: string;
 

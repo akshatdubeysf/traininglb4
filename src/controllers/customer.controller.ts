@@ -14,6 +14,8 @@ import {
   requestBody,
   response
 } from '@loopback/rest';
+import {authorize} from 'loopback4-authorization';
+import {PermissionKey} from '../enums/permission';
 import {Customer} from '../models';
 import {CustomerRepository} from '../repositories';
 
@@ -24,6 +26,7 @@ export class CustomerController {
   ) { }
 
   @post('/customers')
+  @authorize({permissions: [PermissionKey.CreateCustomer]})
   @response(200, {
     description: 'Customer model instance',
     content: {'application/json': {schema: getModelSchemaRef(Customer)}},
@@ -45,6 +48,7 @@ export class CustomerController {
   }
 
   @get('/customers/count')
+  @authorize({permissions: [PermissionKey.ViewCustomer]})
   @response(200, {
     description: 'Customer model count',
     content: {'application/json': {schema: CountSchema}},
@@ -56,6 +60,10 @@ export class CustomerController {
   }
 
   @get('/customers')
+  @authorize({
+    permissions: [PermissionKey.ViewCustomer
+    ]
+  })
   @response(200, {
     description: 'Array of Customer model instances',
     content: {
@@ -74,6 +82,7 @@ export class CustomerController {
   }
 
   @patch('/customers')
+  @authorize({permissions: [PermissionKey.UpdateCustomer]})
   @response(200, {
     description: 'Customer PATCH success count',
     content: {'application/json': {schema: CountSchema}},
@@ -93,6 +102,10 @@ export class CustomerController {
   }
 
   @get('/customers/{id}')
+  @authorize({
+    permissions: [PermissionKey.ViewCustomer
+    ]
+  })
   @response(200, {
     description: 'Customer model instance',
     content: {
@@ -109,6 +122,10 @@ export class CustomerController {
   }
 
   @patch('/customers/{id}')
+  @authorize({
+    permissions: [PermissionKey.UpdateCustomer
+    ]
+  })
   @response(204, {
     description: 'Customer PATCH success',
   })
@@ -127,6 +144,10 @@ export class CustomerController {
   }
 
   @put('/customers/{id}')
+  @authorize({
+    permissions: [PermissionKey.UpdateCustomer
+    ]
+  })
   @response(204, {
     description: 'Customer PUT success',
   })
@@ -138,6 +159,10 @@ export class CustomerController {
   }
 
   @del('/customers/{id}')
+  @authorize({
+    permissions: [PermissionKey.DeleteCustomer
+    ]
+  })
   @response(204, {
     description: 'Customer DELETE success',
   })

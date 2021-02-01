@@ -1,9 +1,7 @@
 import {inject} from '@loopback/core';
 import {
   FindRoute,
-
-
-
+  HttpErrors,
   InvokeMethod,
   InvokeMiddleware,
   ParseParams,
@@ -16,7 +14,7 @@ import {
 } from '@loopback/rest';
 import * as dotenv from 'dotenv';
 import {AuthenticateFn, AuthenticationBindings} from 'loopback4-authentication';
-import {AuthorizationBindings, AuthorizeFn, UserPermissionsFn} from 'loopback4-authorization';
+import {AuthorizationBindings, AuthorizeErrorKeys, AuthorizeFn} from 'loopback4-authorization';
 import {LogFn, LOG_BINDINGS, LOG_LEVEL} from './components/logger';
 import {User} from './models';
 
@@ -39,9 +37,7 @@ export class MySequence implements SequenceHandler {
     @inject(AuthenticationBindings.USER_AUTH_ACTION)
     protected authenticateRequest: AuthenticateFn<User>,
     @inject(AuthorizationBindings.AUTHORIZE_ACTION)
-    protected checkAuthorisation: AuthorizeFn,
-    @inject(AuthorizationBindings.USER_PERMISSIONS)
-    private readonly getUserPermissions: UserPermissionsFn<string>,
+    protected checkAuthorisation: AuthorizeFn
   ) { }
 
   async handle(context: RequestContext) {
@@ -49,28 +45,28 @@ export class MySequence implements SequenceHandler {
     try {
       const {request, response} = context;
       this.logStart(context);
-      // if (!request.headers.referer || !origins?.includes(request.headers.referer)) {
-      //   throw new Error('Origin not allowed!');
-      // }
+      if (!request.headers.referer || !origins?.includes(request.headers.referer)) {
+        throw new Error('Origin not allowed!');
+      }
       const finished = await this.invokeMiddleware(context);
       if (finished) return;
       const route = this.findRoute(request);
       const args = await this.parseParams(request, route);
 
-      // const authUser: User = await this.authenticateRequest(
-      //   request,
-      //   response,
-      // );
+      const authUser: User = await this.authenticateRequest(
+        request,
+        response,
+      );
 
 
-      // const isAccessAllowed: boolean = await this.checkAuthorisation(
-      //   (authUser && authUser.role && authUser.role.permissions) || [], // do authUser.permissions if using method #1
-      //   request,
-      // );
-      // // Checking access to route here
-      // if (!isAccessAllowed) {
-      //   throw new HttpErrors.Forbidden(AuthorizeErrorKeys.NotAllowedAccess);
-      // }
+      const isAccessAllowed: boolean = await this.checkAuthorisation(
+        (authUser && authUser.role && authUser.role.permissions) || [], // do authUser.permissions if using method #1
+        request,
+      );
+      // Checking access to route here
+      if (!isAccessAllowed) {
+        throw new HttpErrors.Forbidden(AuthorizeErrorKeys.NotAllowedAccess);
+      }
 
       const result = await this.invoke(route, args);
       this.send(response, result);
@@ -80,8 +76,8 @@ export class MySequence implements SequenceHandler {
       this.reject(context, err);
     }
   }
-  private log(str: string) {
-    this.logger(str, LOG_LEVEL.INFO);
+  private log(str: string, level?: number) {
+    this.logger(str, level || LOG_LEVEL.INFO);
   }
   private logStart(context: RequestContext) {
     this.log('Start time - ' + new Date().toLocaleTimeString());
@@ -95,7 +91,7 @@ export class MySequence implements SequenceHandler {
   }
 
   private logError() {
-    this.log('Error time - ' + new Date().toLocaleTimeString());
+    this.log('Error time - ' + new Date().toLocaleTimeString(), LOG_LEVEL.ERROR);
   }
 
 }

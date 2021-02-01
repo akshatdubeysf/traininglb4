@@ -21,6 +21,8 @@ import {
   requestBody,
   response
 } from '@loopback/rest';
+import {authorize} from 'loopback4-authorization';
+import {PermissionKey} from '../enums/permission';
 import {Role} from '../models';
 import {RoleRepository} from '../repositories';
 
@@ -31,6 +33,7 @@ export class RoleController {
   ) { }
 
   @post('/roles')
+  @authorize({permissions: [PermissionKey.CreateRole]})
   @response(200, {
     description: 'Role model instance',
     content: {'application/json': {schema: getModelSchemaRef(Role)}},
@@ -52,6 +55,7 @@ export class RoleController {
   }
 
   @get('/roles/count')
+  @authorize({permissions: [PermissionKey.ViewRole]})
   @response(200, {
     description: 'Role model count',
     content: {'application/json': {schema: CountSchema}},
@@ -63,6 +67,7 @@ export class RoleController {
   }
 
   @get('/roles')
+  @authorize({permissions: [PermissionKey.ViewRole]})
   @response(200, {
     description: 'Array of Role model instances',
     content: {
@@ -81,6 +86,7 @@ export class RoleController {
   }
 
   @patch('/roles')
+  @authorize({permissions: [PermissionKey.UpdateRole]})
   @response(200, {
     description: 'Role PATCH success count',
     content: {'application/json': {schema: CountSchema}},
@@ -100,6 +106,7 @@ export class RoleController {
   }
 
   @get('/roles/{id}')
+  @authorize({permissions: [PermissionKey.ViewRole]})
   @response(200, {
     description: 'Role model instance',
     content: {
@@ -116,6 +123,7 @@ export class RoleController {
   }
 
   @patch('/roles/{id}')
+  @authorize({permissions: [PermissionKey.UpdateRole]})
   @response(204, {
     description: 'Role PATCH success',
   })
@@ -134,6 +142,7 @@ export class RoleController {
   }
 
   @put('/roles/{id}')
+  @authorize({permissions: [PermissionKey.UpdateRole]})
   @response(204, {
     description: 'Role PUT success',
   })
@@ -145,6 +154,7 @@ export class RoleController {
   }
 
   @del('/roles/{id}')
+  @authorize({permissions: [PermissionKey.DeleteRole]})
   @response(204, {
     description: 'Role DELETE success',
   })

@@ -69,8 +69,8 @@ export class UserController {
     content: {
       'application/json': {
         schema: {
-          type: 'array',
-          items: getModelSchemaRef(User, {includeRelations: true}),
+          type: 'array'
+          // items: getModelSchemaRef(User, {includeRelations: true}),
         },
       },
     },
@@ -78,7 +78,8 @@ export class UserController {
   async find(
     @param.filter(User) filter?: Filter<User>,
   ): Promise<User[]> {
-    return this.userRepository.find({include: ['role', 'customer'], ...filter});
+    let result;
+    return result = await this.userRepository.find({include: ['role', 'customer'], ...filter});
   }
 
   @patch('/users')

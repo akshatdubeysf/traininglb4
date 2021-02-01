@@ -1,4 +1,5 @@
-import {belongsTo, Entity, hasOne, model, property} from '@loopback/repository';
+import {belongsTo, hasOne, model, property} from '@loopback/repository';
+import {SoftDeleteEntity} from 'loopback4-soft-delete';
 import {Roles} from '../enums/roles';
 import {Customer} from './customer.model';
 import {Role, RoleRelations} from './role.model';
@@ -15,7 +16,7 @@ import {Role, RoleRelations} from './role.model';
   //   }
   // }
 })
-export class User extends Entity {
+export class User extends SoftDeleteEntity {
   @property({
     type: 'string',
     required: true,
@@ -70,14 +71,15 @@ export class User extends Entity {
   customerId: number;
 
   @property({
-    type: 'number',
-    postgresql: {
+    type: 'string',
+    jsonSchema: {
       enum: Object.keys(Roles)
-    }
+    },
+    required: true
   })
   roleId: string;
 
-  @hasOne(() => Role, {keyTo: 'id', keyFrom: 'roleId'})
+  @hasOne(() => Role, {keyTo: 'key', keyFrom: 'roleId'})
   role: Role;
 
   @property({
