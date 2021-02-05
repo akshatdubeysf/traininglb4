@@ -1,6 +1,6 @@
 import {inject, Provider} from '@loopback/context';
 import winston, {createLogger, format, transports} from 'winston';
-import {LOG_BINDINGS, LOG_LEVEL} from '../keys';
+import {LogLevel, LOG_BINDINGS} from '../keys';
 import {
   LogFn,
   LogWriterFn
@@ -13,7 +13,7 @@ export class LogActionProvider implements Provider<LogFn> {
   winston: winston.Logger;
 
   @inject(LOG_BINDINGS.APP_LOG_LEVEL, {optional: true})
-  private logLevel: number = LOG_LEVEL.WARN;
+  private logLevel: number = LogLevel.WARN;
 
   constructor(
   ) {
@@ -37,24 +37,24 @@ export class LogActionProvider implements Provider<LogFn> {
     level?: number
   ): void {
     if (
-      this.logLevel !== LOG_LEVEL.OFF
+      this.logLevel !== LogLevel.OFF
     ) {
-      this.logWriter(str, level || this.logLevel);
+      this.logWriter(str, level ?? this.logLevel);
     }
   }
 
   logToConsole(msg: string, level: number) {
     switch (level) {
-      case LOG_LEVEL.DEBUG:
+      case LogLevel.DEBUG:
         this.winston.debug(msg);
         break;
-      case LOG_LEVEL.INFO:
+      case LogLevel.INFO:
         this.winston.info(msg);
         break;
-      case LOG_LEVEL.WARN:
+      case LogLevel.WARN:
         this.winston.warn(msg);
         break;
-      case LOG_LEVEL.ERROR:
+      case LogLevel.ERROR:
         this.winston.error(msg);
         break;
     }

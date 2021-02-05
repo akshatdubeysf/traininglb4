@@ -31,7 +31,7 @@ export class User extends SoftDeleteEntity {
   @property({
     type: 'string',
   })
-  lastName: string;
+  lastName?: string;
 
   @property({
     type: 'number',
@@ -68,7 +68,7 @@ export class User extends SoftDeleteEntity {
   modifiedOn?: string;
 
   @belongsTo(() => Customer, {keyTo: 'id'})
-  customerId: number;
+  customerId?: number;
 
   @property({
     type: 'string',
@@ -80,7 +80,7 @@ export class User extends SoftDeleteEntity {
   roleId: string;
 
   @hasOne(() => Role, {keyTo: 'key', keyFrom: 'roleId'})
-  role: Role;
+  role?: Role;
 
   @property({
     type: 'string',
@@ -116,7 +116,7 @@ export class User extends SoftDeleteEntity {
 
 export interface UserRelations {
   // describe navigational properties here
-  role: RoleRelations;
+  role?: RoleRelations;
 }
 
 export type UserWithRelations = User & UserRelations;

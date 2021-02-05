@@ -1,5 +1,5 @@
-import {inject, Getter} from '@loopback/core';
-import {DefaultCrudRepository, repository, HasOneRepositoryFactory} from '@loopback/repository';
+import {Getter, inject} from '@loopback/core';
+import {DefaultCrudRepository, HasOneRepositoryFactory, repository} from '@loopback/repository';
 import {PdbDataSource} from '../datasources';
 import {Customer, CustomerRelations, User} from '../models';
 import {UserRepository} from './user.repository';
@@ -8,7 +8,7 @@ export class CustomerRepository extends DefaultCrudRepository<
   Customer,
   typeof Customer.prototype.id,
   CustomerRelations
-> {
+  > {
 
   public readonly user: HasOneRepositoryFactory<User, typeof Customer.prototype.id>;
 

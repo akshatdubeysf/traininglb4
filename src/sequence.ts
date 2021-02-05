@@ -15,7 +15,7 @@ import {
 import * as dotenv from 'dotenv';
 import {AuthenticateFn, AuthenticationBindings} from 'loopback4-authentication';
 import {AuthorizationBindings, AuthorizeErrorKeys, AuthorizeFn} from 'loopback4-authorization';
-import {LogFn, LOG_BINDINGS, LOG_LEVEL} from './components/logger';
+import {LogFn, LogLevel, LOG_BINDINGS} from './components/logger';
 import {User} from './models';
 
 dotenv.config();
@@ -41,7 +41,7 @@ export class MySequence implements SequenceHandler {
   ) { }
 
   async handle(context: RequestContext) {
-    const origins = process.env.ALLOWED_ORIGIN && process.env.ALLOWED_ORIGIN.split(',');
+    const origins = process.env.ALLOWED_ORIGIN?.split(',');
     try {
       const {request, response} = context;
       this.logStart(context);
@@ -60,7 +60,7 @@ export class MySequence implements SequenceHandler {
 
 
       const isAccessAllowed: boolean = await this.checkAuthorisation(
-        (authUser && authUser.role && authUser.role.permissions) || [], // do authUser.permissions if using method #1
+        (authUser?.role?.permissions) ?? [],
         request,
       );
       // Checking access to route here
@@ -77,7 +77,7 @@ export class MySequence implements SequenceHandler {
     }
   }
   private log(str: string, level?: number) {
-    this.logger(str, level || LOG_LEVEL.INFO);
+    this.logger(str, level ?? LogLevel.INFO);
   }
   private logStart(context: RequestContext) {
     this.log('Start time - ' + new Date().toLocaleTimeString());
@@ -91,7 +91,7 @@ export class MySequence implements SequenceHandler {
   }
 
   private logError() {
-    this.log('Error time - ' + new Date().toLocaleTimeString(), LOG_LEVEL.ERROR);
+    this.log('Error time - ' + new Date().toLocaleTimeString(), LogLevel.ERROR);
   }
 
 }

@@ -78,8 +78,7 @@ export class UserController {
   async find(
     @param.filter(User) filter?: Filter<User>,
   ): Promise<User[]> {
-    let result;
-    return result = await this.userRepository.find({include: ['role', 'customer'], ...filter});
+    return this.userRepository.find({include: ['role', 'customer'], ...filter});
   }
 
   @patch('/users')

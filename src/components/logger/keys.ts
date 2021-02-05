@@ -5,7 +5,7 @@ import {LogFn, LogWriterFn} from './types';
  * Binding keys used by this component.
  */
 export namespace LOG_BINDINGS {
-  export const APP_LOG_LEVEL = BindingKey.create<LOG_LEVEL>(
+  export const APP_LOG_LEVEL = BindingKey.create<LogLevel>(
     'example.log.level',
   );
   export const LOGGER = BindingKey.create<LogWriterFn>('example.log.logger');
@@ -15,7 +15,7 @@ export namespace LOG_BINDINGS {
 /**
  * Enum to define the supported log levels
  */
-export enum LOG_LEVEL {
+export enum LogLevel {
   DEBUG,
   INFO,
   WARN,

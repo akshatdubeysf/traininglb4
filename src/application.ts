@@ -10,7 +10,7 @@ import {ServiceMixin} from '@loopback/service-proxy';
 import {AuthenticationComponent, Strategies} from 'loopback4-authentication';
 import {AuthorizationBindings, AuthorizationComponent} from 'loopback4-authorization';
 import path from 'path';
-import {LogComponent, LOG_BINDINGS, LOG_LEVEL} from './components/logger';
+import {LogComponent, LogLevel, LOG_BINDINGS} from './components/logger';
 import {BearerTokenVerifyProvider} from './providers/bearer-verifier.provider';
 import {GoogleOauth2VerifyProvider} from './providers/google-verifier.provider';
 import {MySequence} from './sequence';
@@ -25,7 +25,7 @@ export class TrainingApplication extends BootMixin(
 
 
     this.component(LogComponent);
-    this.bind(LOG_BINDINGS.APP_LOG_LEVEL).to(LOG_LEVEL.WARN);
+    this.bind(LOG_BINDINGS.APP_LOG_LEVEL).to(LogLevel.WARN);
     // Set up the custom sequence
     this.sequence(MySequence);
 

@@ -99,7 +99,7 @@ export class AuthController {
     @param.query.string('state') state: string,
     @inject(RestBindings.Http.RESPONSE) response: Response,
     @inject(RestBindings.Http.REQUEST) request: Request
-  ): Promise<any> {
+  ): Promise<{token: string}> {
     const clientId = new URLSearchParams(state).get('client_id');
     if (!clientId || !this.user) {
       throw new HttpErrors.Unauthorized(AuthErrorKeys.ClientInvalid);
@@ -122,9 +122,9 @@ export class AuthController {
         subject: this.user.email,
         issuer: process.env.JWT_ISSUER,
       });
-      return Promise.resolve({
+      return {
         token: token
-      })
+      }
     } catch (error) {
       throw new HttpErrors.InternalServerError(AuthErrorKeys.UnknownError);
     }
